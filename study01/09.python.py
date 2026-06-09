@@ -35,6 +35,7 @@ print(temp)
 msg="Hello-Python"
 #遍历字符串，并处理
 for i in msg:
+    #默认遍历一个以换行结束，如果不想换行可以在后面加end=""
     print(f"元素{i}")
 else:
     print("遍历结束")
