@@ -20,6 +20,8 @@ match a:
 
 
 # while循环 else:条件不成立时执行
+#关键字： break:只要出现在循环中，表示结束，跳出循环
+#       continue:出现表示跳出这次循环，进入下一次循环
 temp=1
 while temp>0:
     print(temp)
