@@ -51,3 +51,7 @@ print(list(range(2,10)))
 
 #range(start,end,step) 获取一个从start开始，到end结束的数字序列，step步长(不含end本身)
 print(list(range(2,10,2)))
+
+#随机数生成
+import random
+random_num=random.randint(1,100) #生成随机数1-100（包含1和100）
