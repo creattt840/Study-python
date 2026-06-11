@@ -21,3 +21,4 @@ q.close()
 with open("python.txt","w",encoding="utf-8") as f:
     f.write("hello")
 
+#操作模式"a"：追加模式，新内容会被加在原有内容之后
