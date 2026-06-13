@@ -1,8 +1,8 @@
-import datetime
+from datetime import datetime
 
-from fastapi import FastAPI
-from sqlalchemy import String, DateTime, Float
-from sqlalchemy.ext.asyncio import create_async_engine
+from fastapi import FastAPI, Depends
+from sqlalchemy import String, DateTime, Float,select
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql.functions import now, func
 
@@ -42,3 +42,32 @@ async def create_tables():
 @app.on_event("startup")
 async def startup():
     await create_tables()
+
+#依赖注入：创建依赖项获取数据库会话 + Depends 注入路由处理函数
+#创建异步会话工厂
+AsyncSessionLocal=async_sessionmaker(
+    bind=async_engine, #绑定数据库引擎
+    class_=AsyncSession, #指定会话类
+    expire_on_commit=False, #提交后会话不过期，不会重新查询数据库
+)
+
+#依赖项，用于获取数据库会话
+async def get_database():
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session #返回数据库会话给路由处理函数
+            await session.commit() #提交事务
+        except:
+            await session.rollback() #有异常，回滚
+            raise
+        finally:
+            await session.close() #关闭会话
+
+@app.get("/book/books")
+async def get_book_list(db:AsyncSession=Depends(get_database)):
+    #查询
+    result=await db.execute(select(Book))
+    books=result.scalars().all() #获取所有
+    book=result.scalars().first() #获取第一个
+    book1=await db.get(Book,5) #根据主键获取
+    return books
