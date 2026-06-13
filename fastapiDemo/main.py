@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query,HTTPException
 from pydantic import BaseModel,Field
 from starlette.responses import HTMLResponse, FileResponse
 
@@ -48,6 +48,7 @@ async def create_user(user: User):
 
 #1.装饰器中指定响应类
 #场景：固定返回类型（HTML，纯文本等）
+#response_class：定义返回响应的类型
 @app.get("html",response_class=HTMLResponse)
 async def get_html():
     return "<h1>Hello World</h1>"
@@ -59,3 +60,27 @@ async def get_file():
     file_path = "./files/1.jpeg"
     return FileResponse(file_path)
 
+
+#自定义响应数据格式
+#response_model是路径操作装饰器的关键参数，它通过一个Pydantic模型来严格定义和约束API端点的输出格式
+class News(BaseModel):
+    id: int
+    title: str
+    content: str
+
+#response_model：定义返回数据的结构
+@app.get("/news/{id}",response_model=News)
+async def get_news(id:int):
+    return {
+        "id":id,
+        "title":f"这是第{id}本书",
+        "content":"这是一本好书"
+    }
+
+#异常处理：应使用fastapi.HTTPException来中断正常处理流程，并返回标准错误响应
+@app.get("/news/{id}")
+async def get_news(id:int):
+    id_list=[1,2,3,4,5,6]
+    if id not in id_list:
+        raise HTTPException(status_code=404,detail="当前id不存在")
+    return {"id":id}
