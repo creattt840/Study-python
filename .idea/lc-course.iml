@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$/lc-course">
       <excludeFolder url="file://$MODULE_DIR$/lc-course/.venv" />
     </content>
+    <orderEntry type="jdk" jdkName="E:\code\python code\lc-course\.venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
